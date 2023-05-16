@@ -1,14 +1,14 @@
 name: Upload Website
 on:
-  push:
+  push: # The workflow will run on every push even on the repository
 jobs:
-  build:
-    runs-on: ubuntu-latest
+  build: # The CI part
+    runs-on: ubuntu-latest 
     strategy:
       matrix:
         node-version: [12.x]
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v2 # Downloading Git code
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v1
         with:
@@ -18,12 +18,12 @@ jobs:
       - run: npm test
         env:
           CI: true
-  deploy:
-    needs: build
+  deploy: # The CD part
+    needs: build # Set a depency in the build stage
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
-      - uses: jakejarvis/s3-sync-action@master
+      - uses: jakejarvis/s3-sync-action@master # Use GitHub Action to deploy the code on Amazon Web Services (S3)
         with:
           args: --acl public-read --follow-symlinks --delete
         env:
